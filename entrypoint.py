@@ -29,7 +29,12 @@ if not args.password:
 password = args.password.encode('utf-8')
 if args.verify:
     verify = args.verify.encode('utf-8')
-    if bcrypt.verify(password, verify):
+    try:
+        verify = bcrypt.verify(password, verify)
+    except Exception as e:
+        print('Error: %s' % e, file=sys.stderr)
+        sys.exit(1)
+    if verify:
         print('Success!', file=sys.stderr)
         sys.exit(0)
     else:
@@ -37,10 +42,11 @@ if args.verify:
         sys.exit(1)
 else:
     if args.strength is not None:
-        if args.strength < 4:
-            print('Error: Strength cannot be less than 4.', file=sys.stderr)
-            sys.exit(2)
-        bhash = bcrypt.encrypt(password, rounds=args.strength)
+        try:
+            bhash = bcrypt.encrypt(password, rounds=args.strength)
+        except Exception as e:
+            print('Error: %s' % e, file=sys.stderr)
+            sys.exit(1)
     else:
         bhash = bcrypt.encrypt(password)
     print(bhash, end='', flush=True)
