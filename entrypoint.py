@@ -14,5 +14,6 @@ else:
     salt = bcrypt.gensalt()
 password = password.encode('utf-8')
 bhash = bcrypt.hashpw(password, salt)
-print(bhash.decode('utf-8'))
+print(bhash.decode('utf-8'), end='', flush=True)
+print(file=sys.stderr)
 
